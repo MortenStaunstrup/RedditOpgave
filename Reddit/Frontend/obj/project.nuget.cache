@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jcA3z8R3UQs=",
+  "dgSpecHash": "xPm0DfXpLDc=",
   "success": true,
-  "projectFilePath": "/Users/MortenStaunstrup/src/Reddit/Frontend/Frontend.csproj",
+  "projectFilePath": "/Users/MortenStaunstrup/src/RedditOpgave/Reddit/Frontend/Frontend.csproj",
   "expectedPackageFiles": [
     "/Users/MortenStaunstrup/.nuget/packages/microsoft.aspnetcore.authorization/9.0.8/microsoft.aspnetcore.authorization.9.0.8.nupkg.sha512",
     "/Users/MortenStaunstrup/.nuget/packages/microsoft.aspnetcore.components/9.0.8/microsoft.aspnetcore.components.9.0.8.nupkg.sha512",

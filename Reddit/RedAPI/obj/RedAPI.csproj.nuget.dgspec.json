@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/MortenStaunstrup/src/Reddit/RedAPI/RedAPI.csproj": {}
+    "/Users/MortenStaunstrup/src/RedditOpgave/Reddit/RedAPI/RedAPI.csproj": {}
   },
   "projects": {
-    "/Users/MortenStaunstrup/src/Reddit/RedAPI/RedAPI.csproj": {
+    "/Users/MortenStaunstrup/src/RedditOpgave/Reddit/RedAPI/RedAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/MortenStaunstrup/src/Reddit/RedAPI/RedAPI.csproj",
+        "projectUniqueName": "/Users/MortenStaunstrup/src/RedditOpgave/Reddit/RedAPI/RedAPI.csproj",
         "projectName": "RedAPI",
-        "projectPath": "/Users/MortenStaunstrup/src/Reddit/RedAPI/RedAPI.csproj",
+        "projectPath": "/Users/MortenStaunstrup/src/RedditOpgave/Reddit/RedAPI/RedAPI.csproj",
         "packagesPath": "/Users/MortenStaunstrup/.nuget/packages/",
-        "outputPath": "/Users/MortenStaunstrup/src/Reddit/RedAPI/obj/",
+        "outputPath": "/Users/MortenStaunstrup/src/RedditOpgave/Reddit/RedAPI/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/MortenStaunstrup/.nuget/NuGet/NuGet.Config"

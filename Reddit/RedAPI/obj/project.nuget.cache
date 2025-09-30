@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "LBYADTXt5oc=",
+  "dgSpecHash": "R/I+ayTW0fE=",
   "success": true,
-  "projectFilePath": "/Users/MortenStaunstrup/src/Reddit/RedAPI/RedAPI.csproj",
+  "projectFilePath": "/Users/MortenStaunstrup/src/RedditOpgave/Reddit/RedAPI/RedAPI.csproj",
   "expectedPackageFiles": [
     "/Users/MortenStaunstrup/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/Users/MortenStaunstrup/.nuget/packages/microsoft.aspnetcore.diagnostics.entityframeworkcore/9.0.8/microsoft.aspnetcore.diagnostics.entityframeworkcore.9.0.8.nupkg.sha512",

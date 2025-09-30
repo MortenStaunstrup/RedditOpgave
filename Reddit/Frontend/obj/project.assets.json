@@ -1762,11 +1762,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/MortenStaunstrup/src/Reddit/Frontend/Frontend.csproj",
+      "projectUniqueName": "/Users/MortenStaunstrup/src/RedditOpgave/Reddit/Frontend/Frontend.csproj",
       "projectName": "Frontend",
-      "projectPath": "/Users/MortenStaunstrup/src/Reddit/Frontend/Frontend.csproj",
+      "projectPath": "/Users/MortenStaunstrup/src/RedditOpgave/Reddit/Frontend/Frontend.csproj",
       "packagesPath": "/Users/MortenStaunstrup/.nuget/packages/",
-      "outputPath": "/Users/MortenStaunstrup/src/Reddit/Frontend/obj/",
+      "outputPath": "/Users/MortenStaunstrup/src/RedditOpgave/Reddit/Frontend/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/MortenStaunstrup/.nuget/NuGet/NuGet.Config"
