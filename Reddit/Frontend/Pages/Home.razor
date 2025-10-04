@@ -1,28 +1,105 @@
 ﻿@page "/"
+@using System.Net
 @using System.Text
+@using Frontend.Service
+@using Core
+@using Cookie = Core.Cookie
+@inject PostService Service
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager Nav
+@inject UserState UserState
 
 <PageTitle>Redit</PageTitle>
 
-@if (!hasUsername)
+@if (loaded)
 {
-    <div>
-        <label for="name">Enter author name</label>
-        <InputText id="name" @bind-Value="@Username" @oninput="OnAuthorNameChange"></InputText>
-        <button @onclick="HandleAuthorName">Confirm</button>
-        <span style="color: red">@nameErrMes</span>
-    </div>
-} else
-{
-    <h1>@Username</h1>
+    if (hasUsername)
+    {
+        <div class="homepage">
+            @foreach (var post in _posts)
+            {
+                <hr/>
+                <div class="postCard" @onclick="() => ShowThread(post.PostId)">
+                    <span class="postTitle">@post.Title</span>
+                    <span class="postText">@(post.Content.Length > maxContentLength ? post.Content.Substring(0, maxContentLength) + "..." : post.Content)</span>
+                </div>
+            }
+            @if (!noMorePosts)
+            {
+                <span class="showMore">Show more...</span>
+            }
+        </div>
+    } else
+    {
+        <div>
+            <h1>Choose your Author name for this session</h1>
+            <div class="inputButton">
+                <span>Author name</span>
+                <InputText @bind-Value="@Username" @oninput="OnAuthorNameChange" style="margin-bottom: 25px; border: black solid 1px; border-radius: 10px; background-color: #efefef;"></InputText>
+                <button @onclick="HandleAuthorName">Confirm</button>
+            </div>
+            <span style="color: red">@nameErrMes</span>
+        </div>
+    }
 }
 
 
 @code{
+    bool loaded = false;
+    Cookie? _cookie;
     string? Username;
     string? nameErrMes;
     bool hasUsername = false;
 
-    private void HandleAuthorName()
+    const int maxContentLength = 150;
+
+    int page = 0;
+    List<Post> _posts = new List<Post>();
+    bool noMorePosts = false;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        
+        _cookie = await LocalStorage.GetItemAsync<Cookie?>("Session");
+        if (_cookie is not null)
+        {
+            if (DateTime.Now > _cookie.ExpirationDate)
+            {
+                await LocalStorage.ClearAsync();
+            }
+            else
+            {
+                Username = _cookie.AuthorName;
+                UserState.Username = Username;
+                hasUsername = true;
+            }
+
+        }
+        
+        var response = await Service.GetPosts(page);
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.OK:
+                var newPosts = await response.Content.ReadFromJsonAsync<List<Post>>();
+                if (newPosts.Count < Globals._postsToLoad)
+                    noMorePosts = true;
+                _posts.AddRange(newPosts);
+                break;
+                
+            case HttpStatusCode.NoContent:
+                noMorePosts = true;
+                break;
+                
+            default:
+                Console.WriteLine("Response on get posts not an expected statuscode");
+                break;
+        }
+        
+        loaded = true;
+        StateHasChanged();
+    }
+
+    private async void HandleAuthorName()
     {
         if (string.IsNullOrWhiteSpace(Username))
         {
@@ -38,9 +115,18 @@
                 if (Username[i] != ' ')
                     accName.Append(Username[i]);
             }
-
+            
             Username = accName.ToString();
+            
+            // Du har dit login i 30 min, eller forevigt hvis du ikke skifter side
+            _cookie = new Cookie()
+            {
+                AuthorName = Username,
+                ExpirationDate = DateTime.Now.AddMinutes(30)
+            };
+            UserState.Username = Username;
             hasUsername = true;
+            await LocalStorage.SetItemAsync("Session", _cookie);
         }
         StateHasChanged();
     }
@@ -50,4 +136,20 @@
         nameErrMes = "";
         StateHasChanged();
     }
+
+    private async void ChangeName()
+    {
+        hasUsername = false;
+        await LocalStorage.ClearAsync();
+        Username = string.Empty;
+        _cookie = null;
+        UserState.Username = string.Empty;
+        StateHasChanged();
+    }
+
+    private void ShowThread(long postPostId)
+    {
+        Nav.NavigateTo($"/PostPage/{postPostId}");
+    }
+
 }

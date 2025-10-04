@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Core;
 using RedAPI.Models;
 
 namespace RedAPI.Service;
@@ -6,7 +7,7 @@ namespace RedAPI.Service;
 public class DataService
 {
     private PostContext db;
-
+    
     public DataService(PostContext db)
     {
         this.db = db;
@@ -148,10 +149,10 @@ public class DataService
         }
     }
 
-    public List<Post> GetPosts()
+    public List<Post?> GetPosts(int page)
     {
         // Henter posts uden comments, til forsiden
-        return db.Posts.ToList();
+        return db.Posts.OrderByDescending(p => p.TimeStamp).Skip(page * Globals._postsToLoad).Take(Globals._postsToLoad).ToList();
     }
 
     public Post? GetPost(long id)

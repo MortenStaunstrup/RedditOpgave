@@ -1,16 +1,35 @@
-﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
+﻿@using Core
+@inherits LayoutComponentBase
+@inject UserState UserState
+@inject NavigationManager Nav
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+<div class="reddit-layout">
+    <header class="reddit-header">
+        <div @onclick="GoHome" class="logo">Redit</div>
+        <input class="search" placeholder="Search Redit">
+        <div class="header-actions">
+            <span>@UserState.Username</span>
         </div>
+    </header>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
+    <div class="reddit-body">
+        @Body
+    </div>
 </div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        UserState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        UserState.OnChange -= StateHasChanged;
+    }
+
+    private void GoHome()
+    {
+        Nav.NavigateTo("/");
+    }
+}

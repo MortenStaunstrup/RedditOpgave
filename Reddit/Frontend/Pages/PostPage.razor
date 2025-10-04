@@ -1,0 +1,59 @@
+@using System.Net
+@using Frontend.Service
+@using Core
+@inject PostService Service
+@inject NavigationManager Nav
+@page "/PostPage/{postId:long}"
+
+@if (loaded)
+{
+    @if (_post is not null)
+    {
+    
+    } else if (!postExists)
+    {
+        <div class="notFoundDiv">
+            <img src="err.webp" alt="Error picture"/>
+            <h1>This post could not be found</h1>
+            <p>Sorry, we could not find the requested post</p>
+            <p>Go back to the <a class="mainLink" @onclick="BackToMainPage">main page</a> to find other posts to interact with</p>
+        </div>
+    }   
+}
+
+@code {
+    [Parameter]
+    public long postId { get; set; }
+
+    bool loaded = false;
+    
+    Post? _post;
+    bool postExists = false;
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        var response = await Service.GetPost(postId);
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.OK:
+                _post = await response.Content.ReadFromJsonAsync<Post>();
+                break;
+                
+            case HttpStatusCode.NotFound:
+                postExists = false;
+                break;
+                
+            default:
+                Console.WriteLine("Response on get post not an expected statuscode");
+                break;
+        }
+        loaded = true;
+        StateHasChanged();
+    }
+
+    private void BackToMainPage()
+    {
+        Nav.NavigateTo("/");
+    }
+
+}

@@ -48,6 +48,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseCors(AllowSomeStuff);
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
@@ -58,7 +60,13 @@ app.MapControllers();
 
 //GET
 
-app.MapGet("/api/posts", (DataService service) => service.GetPosts());
+app.MapGet("/api/{page:int}/posts", (DataService service, int page) =>
+{
+    var thePosts = service.GetPosts(page);
+    if (thePosts.Count > 0) 
+        return Results.Ok(thePosts);
+    return Results.NoContent();
+});
 
 app.MapGet("/api/posts/{id:long}", (DataService service, long id) =>
 {

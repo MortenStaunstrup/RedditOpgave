@@ -1,0 +1,12 @@
+a:hover{
+    cursor: pointer;
+}
+
+.notFoundDiv{
+    
+}
+
+.mainLink{
+    color: blue;
+    text-decoration: underline;
+}

@@ -1,5 +1,6 @@
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
+using Core;
 namespace RedAPI.Models;
 
 public class PostContext : DbContext
