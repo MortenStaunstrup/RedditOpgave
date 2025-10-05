@@ -88,10 +88,26 @@ app.MapPut("/api/posts/{id:long}/upvote", (DataService service, long id) =>
 
 });
 
+app.MapPut("/api/posts/{id:long}/upvote/remove", (DataService service, long id) =>
+{
+    var post = service.RemoveUpvotePost(id);
+    if (post == null)
+        return Results.NotFound();
+    return Results.Ok(post);
+});
 
 app.MapPut("/api/posts/{id:long}/downvote", (DataService service, long id) =>
 {
     var post = service.DownvotePost(id);
+    if (post == null)
+        return Results.NotFound();
+    return Results.Ok(post);
+});
+
+
+app.MapPut("/api/posts/{id:long}/downvote/remove", (DataService service, long id) =>
+{
+    var post = service.RemoveDownvotePost(id);
     if (post == null)
         return Results.NotFound();
     return Results.Ok(post);
@@ -107,11 +123,28 @@ app.MapPut("/api/posts/{postId:long}/comments/{commentId:long}/upvote",
         return Results.Ok(comment);
     });
 
+app.MapPut("/api/posts/{postId:long}/comments/{commentId:long}/upvote/remove",
+    (DataService service, long postId, long commentId) =>
+    {
+        var comment = service.RemoveUpvoteComment(postId, commentId);
+        if (comment == null)
+            return Results.NotFound();
+        return Results.Ok(comment);
+    });
 
 app.MapPut("/api/posts/{postId:long}/comments/{commentId:long}/downvote",
     (DataService service, long postId, long commentId) =>
     {
         var comment = service.DownvoteComment(postId, commentId);
+        if (comment == null)
+            return Results.NotFound();
+        return Results.Ok(comment);
+    });
+
+app.MapPut("/api/posts/{postId:long}/comments/{commentId:long}/downvote/remove",
+    (DataService service, long postId, long commentId) =>
+    {
+        var comment = service.RemoveDownvoteComment(postId, commentId);
         if (comment == null)
             return Results.NotFound();
         return Results.Ok(comment);

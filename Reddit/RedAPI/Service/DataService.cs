@@ -172,6 +172,18 @@ public class DataService
         return post;
     }
 
+    public Post? RemoveUpvotePost(long id)
+    {
+        var post = db.Posts.FirstOrDefault(p => p.PostId == id);
+        if (post == null)
+            return null;
+        
+        post.Upvotes -= 1;
+        db.Update(post);
+        db.SaveChanges();
+        return post;
+    }
+
     public Post? DownvotePost(long id)
     {
         var post = db.Posts.FirstOrDefault(p => p.PostId == id);
@@ -179,6 +191,19 @@ public class DataService
             return null;
         
         post.Downvotes += 1;
+        db.Update(post);
+        db.SaveChanges();
+        return post;
+    }
+    
+    
+    public Post? RemoveDownvotePost(long id)
+    {
+        var post = db.Posts.FirstOrDefault(p => p.PostId == id);
+        if (post == null)
+            return null;
+        
+        post.Downvotes -= 1;
         db.Update(post);
         db.SaveChanges();
         return post;
@@ -199,6 +224,22 @@ public class DataService
         db.SaveChanges();
         return comment;
     }
+
+    public Comment? RemoveUpvoteComment(long postId, long commentId)
+    {
+        var post = db.Posts.Include(p => p.Comments).FirstOrDefault(p => p.PostId == postId);
+        if (post == null)
+            return null;
+        
+        var comment = db.Comments.FirstOrDefault(c => c.CommentId == commentId);
+        if (comment == null)
+            return null;
+        
+        comment.Upvotes -= 1;
+        db.Update(comment);
+        db.SaveChanges();
+        return comment;
+    }
     
     public Comment? DownvoteComment(long postId, long commentId)
     {
@@ -211,6 +252,22 @@ public class DataService
             return null;
         
         comment.Downvotes += 1;
+        db.Update(comment);
+        db.SaveChanges();
+        return comment;
+    }
+    
+    public Comment? RemoveDownvoteComment(long postId, long commentId)
+    {
+        var post = db.Posts.Include(p => p.Comments).FirstOrDefault(p => p.PostId == postId);
+        if (post == null)
+            return null;
+        
+        var comment = db.Comments.FirstOrDefault(c => c.CommentId == commentId);
+        if (comment == null)
+            return null;
+        
+        comment.Downvotes -= 1;
         db.Update(comment);
         db.SaveChanges();
         return comment;

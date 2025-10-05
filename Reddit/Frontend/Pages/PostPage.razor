@@ -1,15 +1,65 @@
 @using System.Net
 @using Frontend.Service
+@using Cookie = Core.Cookie
 @using Core
 @inject PostService Service
 @inject NavigationManager Nav
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @page "/PostPage/{postId:long}"
 
 @if (loaded)
 {
-    @if (_post is not null)
+    if (_post is not null)
     {
-    
+        if (errVoting)
+        {
+            <div class="alert alert-danger" role="alert">
+                An error occured while voting, please try again later
+            </div>
+        }
+        <div class="postCard">
+            <div class="authorTimestamp">
+                <span>@_post.Author</span>
+                <span>@timeAgo</span>
+            </div>
+            <div class="contentDiv">
+                <span>@_post.Title</span>
+                <span>@_post.Content</span>
+            </div>
+            <div class="voteButtDiv">
+                <button class="voteButtons" @onclick="UpvotePost"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="@upvoteColor" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
+                </svg>@_post.Upvotes</button>
+                <button class="voteButtons" @onclick="DownvotePost"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="rotate(180 12 12)">
+                        <path fill="@downvoteColor" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
+                    </g>
+                </svg>@_post.Downvotes</button>
+            </div>
+        </div>
+        
+        <div class="commentsDiv">
+            @foreach (var comment in _post.Comments)
+            {
+                <div class="comment">
+                    <div class="authorTimestampComment">
+                        <span>@comment.Author</span>
+                        <span>@comment.TimeStamp</span>
+                    </div>
+                    <div>
+                        @comment.Content
+                    </div>
+                    <button class="voteButtons" @onclick="() => UpvoteComment(comment.CommentId)"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="@(commentStates[comment.CommentId].State == CommentState.Upvoted ? "orange" : "grey")" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
+                    </svg>@comment.Upvotes</button>
+                    <button class="voteButtons" @onclick="() => DownvoteComment(comment.CommentId)"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <g transform="rotate(180 12 12)">
+                            <path fill="@(commentStates[comment.CommentId].State == CommentState.Downvoted ? "blue" : "grey")" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
+                        </g>
+                    </svg>@comment.Downvotes</button>
+                </div>
+            }
+        </div>
     } else if (!postExists)
     {
         <div class="notFoundDiv">
@@ -25,18 +75,40 @@
     [Parameter]
     public long postId { get; set; }
 
+    Cookie? _cookie;
+    
     bool loaded = false;
     
     Post? _post;
     bool postExists = false;
     
+    bool upvoted = false;
+    bool downvoted = false;
+    string upvoteColor = "grey";
+    string downvoteColor = "grey";
+    
+    Dictionary<long, CommentStateTimestampContainer> commentStates = new Dictionary<long, CommentStateTimestampContainer>();
+    
+    bool errVoting = false;
+
+    string? timeAgo;
+    
     protected override async Task OnParametersSetAsync()
     {
+        _cookie = await LocalStorage.GetItemAsync<Cookie>("Session");
+        if (_cookie is null)
+        {
+            BackToMainPage();
+        }
+
         var response = await Service.GetPost(postId);
         switch (response.StatusCode)
         {
             case HttpStatusCode.OK:
                 _post = await response.Content.ReadFromJsonAsync<Post>();
+                timeAgo = FormatTimeAgo(_post.TimeStamp);
+                SearchForPostVote();
+                SearchForCommentsVote(_post.Comments);
                 break;
                 
             case HttpStatusCode.NotFound:
@@ -55,5 +127,371 @@
     {
         Nav.NavigateTo("/");
     }
+    
+    private string FormatTimeAgo(DateTime time)
+    {
+        var span = DateTime.Now - time;
 
+        if (span.TotalMinutes < 1)
+            return "just now";
+        if (span.TotalMinutes < 60)
+            return $"{(int)span.TotalMinutes} minute{(span.TotalMinutes < 2 ? "" : "s")} ago";
+        if (span.TotalHours < 24)
+            return $"{(int)span.TotalHours} hour{(span.TotalHours < 2 ? "" : "s")} ago";
+        if (span.TotalDays < 30)
+            return $"{(int)span.TotalDays} day{(span.TotalDays < 2 ? "" : "s")} ago";
+        if (span.TotalDays < 365)
+            return $"{(int)(span.TotalDays / 30)} month{(span.TotalDays / 30 < 2 ? "" : "s")} ago";
+        else
+            return $"{(int)(span.TotalDays / 365)} year{(span.TotalDays / 365 < 2 ? "" : "s")} ago";
+    }
+
+    private void SearchForPostVote()
+    {
+        var uVoted = _cookie.postsUpvoted.FirstOrDefault(p => p == postId);
+        var dVoted = _cookie.postsDownvoted.FirstOrDefault(p => p == postId);
+
+        if (uVoted != 0)
+        {
+            upvoted = true;
+            upvoteColor = "orange";
+            return;
+        }
+        
+        if (dVoted != 0)
+        {
+            downvoted = true;
+            downvoteColor = "blue";
+        }
+    }
+
+    private void SearchForCommentsVote(List<Comment> comments)
+    {
+        foreach (var comment in comments)
+        {
+            var uVoted = _cookie.commentsUpvoted.FirstOrDefault(c => c == comment.CommentId);
+            var dVoted = _cookie.commentsDownvoted.FirstOrDefault(c => c == comment.CommentId);
+
+            var state = new CommentStateTimestampContainer();
+            state.FormattedTimestamp = FormatTimeAgo(comment.TimeStamp);
+            
+            if (uVoted == 0  && dVoted == 0)
+            {
+                state.State = CommentState.Notvoted;
+            } else if (uVoted > 0)
+            {
+                state.State = CommentState.Upvoted;
+            } else if (dVoted > 0)
+            {
+                state.State = CommentState.Downvoted;
+            }
+            commentStates[comment.CommentId] = state;
+        }
+    }
+    
+    private async void UpvotePost()
+    {
+        // Hvis allerede upvoted
+        if (upvoted)
+        {
+            var removeUpvoteResponse = await Service.RemoveUpvotePost(_post.PostId);
+            switch (removeUpvoteResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    upvoted = false;
+                    upvoteColor = "grey";
+                    _cookie.postsUpvoted.Remove(_post.PostId);
+                    _post.Upvotes--;
+                    break;
+                    
+                case HttpStatusCode.NotFound:
+                    await ShowErrorMessage();
+                    break;
+            }
+            await LocalStorage.SetItemAsync("Session", _cookie);
+            StateHasChanged();
+            return;
+        }
+        ////////////////////////////////////////
+        upvoted  = true;
+
+        // Hvis allerede downvoted, fjern downvote
+        if (downvoted)
+        {
+            var removeDownvoteResponse = await Service.RemoveDownvotePost(_post.PostId);
+            switch (removeDownvoteResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    downvoted = false;
+                    downvoteColor = "grey";
+                    _cookie.postsDownvoted.Remove(_post.PostId);
+                    _post.Downvotes--;
+                    break;
+                    
+                case HttpStatusCode.NotFound:
+                    await ShowErrorMessage();
+                    break;
+            }
+        }
+        
+        var response = await Service.UpvotePost(_post.PostId);
+
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.OK:
+                upvoteColor = "orange";
+                _post.Upvotes++;
+                _cookie.postsUpvoted.Add(_post.PostId);
+                break;
+                
+            case HttpStatusCode.NotFound:
+                await ShowErrorMessage();
+                break;
+        }
+        await LocalStorage.SetItemAsync("Session", _cookie);
+        StateHasChanged();
+    }
+    
+    private async void DownvotePost()
+    {
+        // Hvis allerede downvoted
+        if (downvoted)
+        {
+            var removeDownvoteResponse = await Service.RemoveDownvotePost(_post.PostId);
+            switch (removeDownvoteResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    downvoted = false;
+                    downvoteColor = "grey";
+                    _cookie.postsDownvoted.Remove(_post.PostId);
+                    _post.Downvotes--;
+                    break;
+                    
+                case HttpStatusCode.NotFound:
+                    await ShowErrorMessage();
+                    break;
+            }
+            await LocalStorage.SetItemAsync("Session", _cookie);
+            StateHasChanged();
+            return;
+        }
+        //////////////////////////
+        downvoted = true;
+
+        // Hvis allerede upvoted, fjern upvote
+        if (upvoted)
+        {
+            var removeUpvoteResponse = await Service.RemoveUpvotePost(_post.PostId);
+            switch (removeUpvoteResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    upvoted = false;
+                    upvoteColor = "grey";
+                    _cookie.postsUpvoted.Remove(_post.PostId);
+                    _post.Upvotes--;
+                    break;
+                    
+                case HttpStatusCode.NotFound:
+                    await ShowErrorMessage();
+                    break;
+            }
+        }
+        
+        var response = await Service.DownvotePost(_post.PostId);
+
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.OK:
+                downvoteColor = "blue";
+                _post.Downvotes++;
+                _cookie.postsDownvoted.Add(_post.PostId);
+                break;
+                
+            case HttpStatusCode.NotFound:
+                await ShowErrorMessage();
+                break;
+        }
+        await LocalStorage.SetItemAsync("Session", _cookie);
+        StateHasChanged();
+    }
+
+    private async void UpvoteComment(long commentId)
+    {
+        // Hvis comment allerede er upvoted, fjern upvote
+        if (commentStates[commentId].State == CommentState.Upvoted)
+        {
+            var removeUpvoteResponse = await Service.RemoveUpvoteComment(_post.PostId, commentId);
+            switch (removeUpvoteResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    commentStates[commentId].State = CommentState.Notvoted;
+                    foreach (var comment in _post.Comments)
+                    {
+                        if (comment.CommentId == commentId)
+                        {
+                            comment.Upvotes--;
+                            _cookie.commentsUpvoted.Remove(commentId);
+                            break;
+                        }
+                    }
+                    break;
+                    
+                case HttpStatusCode.NotFound:
+                    await ShowErrorMessage();
+                    break;
+            }
+
+            await LocalStorage.SetItemAsync("Session", _cookie);
+            StateHasChanged();
+            return;
+        }
+        /////////////////////////////////////////
+
+        
+        // Hvis comment allerede downvoted, fjern downvote
+        if (commentStates[commentId].State == CommentState.Downvoted)
+        {
+            var removeDownvoteResponse = await Service.RemoveDownvoteComment(_post.PostId, commentId);
+            switch (removeDownvoteResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    commentStates[commentId].State = CommentState.Notvoted;
+                    foreach (var comment in _post.Comments)
+                    {
+                        if (comment.CommentId == commentId)
+                        {
+                            comment.Downvotes--;
+                            _cookie.commentsDownvoted.Remove(commentId);
+                            break;
+                        }
+                    }
+                    break;
+                    
+                case HttpStatusCode.NotFound:
+                    await ShowErrorMessage();
+                    break;
+            }
+        }
+        
+        
+        var response = await Service.UpvoteComment(_post.PostId, commentId);
+
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.OK:
+                commentStates[commentId].State = CommentState.Upvoted;
+                foreach (var comment in _post.Comments)
+                {
+                    if (comment.CommentId == commentId)
+                    {
+                        comment.Upvotes++;
+                        _cookie.commentsUpvoted.Add(commentId);
+                        break;
+                    }
+                }
+                break;
+                
+            case HttpStatusCode.NotFound:
+                await ShowErrorMessage();
+                break;
+        }
+
+        await LocalStorage.SetItemAsync("Session", _cookie);
+        StateHasChanged();
+
+    }
+    
+    private async void DownvoteComment(long commentId)
+    {
+        // Hvis comment allerede er downvoted, fjern downvote
+        if (commentStates[commentId].State == CommentState.Downvoted)
+        {
+            var removeDownvoteResponse = await Service.RemoveDownvoteComment(_post.PostId, commentId);
+            switch (removeDownvoteResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    commentStates[commentId].State = CommentState.Notvoted;
+                    foreach (var comment in _post.Comments)
+                    {
+                        if (comment.CommentId == commentId)
+                        {
+                            comment.Downvotes--;
+                            _cookie.commentsDownvoted.Remove(commentId);
+                            break;
+                        }
+                    }
+                    break;
+                    
+                case HttpStatusCode.NotFound:
+                    await ShowErrorMessage();
+                    break;
+            }
+
+            await LocalStorage.SetItemAsync("Session", _cookie);
+            StateHasChanged();
+            return;
+        }
+        /////////////////////////////////////////
+        
+        
+        // Hvis comment allerede upvoted, fjern upvote
+        if (commentStates[commentId].State == CommentState.Upvoted)
+        {
+            var removeUpvoteResponse = await Service.RemoveUpvoteComment(_post.PostId, commentId);
+            switch (removeUpvoteResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    commentStates[commentId].State = CommentState.Notvoted;
+                    foreach (var comment in _post.Comments)
+                    {
+                        if (comment.CommentId == commentId)
+                        {
+                            comment.Upvotes--;
+                            _cookie.commentsUpvoted.Remove(commentId);
+                            break;
+                        }
+                    }
+                    break;
+                    
+                case HttpStatusCode.NotFound:
+                    await ShowErrorMessage();
+                    break;
+            }
+        }
+        
+        var response = await Service.DownvoteComment(_post.PostId, commentId);
+
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.OK:
+                commentStates[commentId].State = CommentState.Downvoted;
+                foreach (var comment in _post.Comments)
+                {
+                    if (comment.CommentId == commentId)
+                    {
+                        comment.Downvotes++;
+                        _cookie.commentsDownvoted.Add(commentId);
+                        break;
+                    }
+                }
+                break;
+                
+            case HttpStatusCode.NotFound:
+                await ShowErrorMessage();
+                break;
+        }
+
+        await LocalStorage.SetItemAsync("Session", _cookie);
+        StateHasChanged();
+    }
+
+    private async Task ShowErrorMessage()
+    {
+        errVoting = true;
+        StateHasChanged();
+        await Task.Delay(3000);
+        errVoting = false;
+        StateHasChanged();
+    }
+    
 }

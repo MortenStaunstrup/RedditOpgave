@@ -6,7 +6,44 @@ a:hover{
     
 }
 
+.authorTimestamp{
+    
+}
+
+.postCard{
+    width: 35%;
+}
+
 .mainLink{
     color: blue;
     text-decoration: underline;
+}
+
+svg{
+    width: 24px;
+}
+
+.voteButtons{
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    border-radius: 10px;
+    border: none;
+}
+
+.voteButtons:hover{
+    background-color: #aaaaaa;
+}
+
+.voteButtDiv{
+    display: flex;
+    width: fit-content;
+}
+
+.commentsDiv{
+    
+}
+
+.comment{
+    
 }
