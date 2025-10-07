@@ -6,12 +6,78 @@ a:hover{
     
 }
 
+.tContent{
+    margin-bottom: 10px;
+    white-space: pre-wrap;
+}
+
+.contentDiv{
+    display: flex;
+    flex-direction: column;
+}
+
+.title{
+    font-size: 30px;
+    font-weight: bold;
+}
+
 .authorTimestamp{
     
 }
 
+.postPage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
 .postCard{
     width: 35%;
+    margin-bottom: 55px;
+}
+
+.commentsDiv{
+    width: 35%;
+}
+
+.sendCommDiv{
+    display: flex;
+    position: relative;
+    width: 35%;
+    flex-direction: column;
+    align-items: baseline;
+}
+
+.charsLeft{
+    position: absolute;
+    bottom: 44px;
+    right: -54px;
+    transition: right 0.2s;
+    opacity: 0;
+}
+
+::deep .inputField{
+    margin-top: 30px;
+    margin-bottom: 13px;
+    width: 100%;
+    border-radius: 10px;
+    min-height: 85px;
+    height: 15px;
+    padding: 10px;
+}
+
+.show{
+    right: 10px;
+    opacity: 100%;
+}
+
+.authorName{
+    font-weight: bold;
+}
+
+.timeStamp{
+    color: #a1a1a1;
 }
 
 .mainLink{
@@ -23,15 +89,23 @@ svg{
     width: 24px;
 }
 
-.voteButtons{
-    display: flex;
-    align-items: center;
+.upvoteButton{
+    margin-right: 10px;
+    border-radius: 10px;
+    border: none;
+}
+
+.downvoteButton{
     margin-left: 10px;
     border-radius: 10px;
     border: none;
 }
 
-.voteButtons:hover{
+.upvoteButton:hover{
+    background-color: #aaaaaa;
+}
+
+.downvoteButton:hover{
     background-color: #aaaaaa;
 }
 
@@ -40,10 +114,6 @@ svg{
     width: fit-content;
 }
 
-.commentsDiv{
-    
-}
-
 .comment{
-    
+    margin-bottom: 18px;
 }

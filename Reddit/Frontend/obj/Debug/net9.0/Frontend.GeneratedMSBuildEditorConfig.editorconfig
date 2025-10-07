@@ -28,10 +28,6 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/mort4/RiderProjects/RedditOpgave/Reddit/Frontend/Pages/NewPost.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTmV3UG9zdC5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/mort4/RiderProjects/RedditOpgave/Reddit/Frontend/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
@@ -47,6 +43,10 @@ build_metadata.AdditionalFiles.CssScope = b-fpiqm1rjhp
 [C:/Users/mort4/RiderProjects/RedditOpgave/Reddit/Frontend/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-7ukv6pqru6
+
+[C:/Users/mort4/RiderProjects/RedditOpgave/Reddit/Frontend/Pages/NewPost.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTmV3UG9zdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-exa28tvuyq
 
 [C:/Users/mort4/RiderProjects/RedditOpgave/Reddit/Frontend/Pages/PostPage.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUG9zdFBhZ2UucmF6b3I=

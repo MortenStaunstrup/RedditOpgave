@@ -5,62 +5,81 @@
 @inject PostService Service
 @inject NavigationManager Nav
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject UserState UserState
 @page "/PostPage/{postId:long}"
 
 @if (loaded)
 {
     if (_post is not null)
     {
-        if (errVoting)
+        if (err)
         {
             <div class="alert alert-danger" role="alert">
-                An error occured while voting, please try again later
+                @errMessage
             </div>
         }
-        <div class="postCard">
-            <div class="authorTimestamp">
-                <span>@_post.Author</span>
-                <span>@timeAgo</span>
-            </div>
-            <div class="contentDiv">
-                <span>@_post.Title</span>
-                <span>@_post.Content</span>
-            </div>
-            <div class="voteButtDiv">
-                <button class="voteButtons" @onclick="UpvotePost"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="@upvoteColor" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
-                </svg>@_post.Upvotes</button>
-                <button class="voteButtons" @onclick="DownvotePost"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <g transform="rotate(180 12 12)">
-                        <path fill="@downvoteColor" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
-                    </g>
-                </svg>@_post.Downvotes</button>
-            </div>
-        </div>
-        
-        <div class="commentsDiv">
-            @foreach (var comment in _post.Comments)
-            {
-                <div class="comment">
-                    <div class="authorTimestampComment">
-                        <span>@comment.Author</span>
-                        <span>@comment.TimeStamp</span>
-                    </div>
-                    <div>
-                        @comment.Content
-                    </div>
-                    <button class="voteButtons" @onclick="() => UpvoteComment(comment.CommentId)"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path fill="@(commentStates[comment.CommentId].State == CommentState.Upvoted ? "orange" : "grey")" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
-                    </svg>@comment.Upvotes</button>
-                    <button class="voteButtons" @onclick="() => DownvoteComment(comment.CommentId)"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <g transform="rotate(180 12 12)">
-                            <path fill="@(commentStates[comment.CommentId].State == CommentState.Downvoted ? "blue" : "grey")" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
-                        </g>
-                    </svg>@comment.Downvotes</button>
+        <div class="postPage">
+            <div class="postCard">
+                <div class="authorTimestamp">
+                    <span>@_post.Author</span>
+                    <span class="timeStamp">@timeAgo</span>
                 </div>
-            }
+                <div class="contentDiv">
+                    <span class="title">@_post.Title</span>
+                    <span class="tContent">@(_post.Content ?? _post.Content)</span>
+                    @if (_post.URL is not null)
+                    {
+                        <span><a href="@_post.URL" target="_blank">@_post.URL</a></span>
+                    }
+                </div>
+                <div class="voteButtDiv">
+                    <button class="upvoteButton" @onclick="UpvotePost"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="@upvoteColor" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
+                    </svg></button>
+                    <span>@(_post.Upvotes - _post.Downvotes)</span>
+                    <button class="downvoteButton" @onclick="DownvotePost"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <g transform="rotate(180 12 12)">
+                            <path fill="@downvoteColor" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
+                        </g>
+                    </svg></button>
+                </div>
+            </div>
+        
+            <div class="commentsDiv">
+                @foreach (var comment in _post.Comments)
+                {
+                    <div class="comment">
+                        <div class="authorTimestampComment">
+                            <span class="authorName">@comment.Author</span>
+                            <span class="timeStamp">@commentStates[comment.CommentId].FormattedTimestamp</span>
+                        </div>
+                        <div class="tContent">
+                            <span>@comment.Content</span>
+                        </div>
+                        <div class="voteButtDiv">
+                            <button class="upvoteButton" @onclick="() => UpvoteComment(comment.CommentId)"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path fill="@(commentStates[comment.CommentId].State == CommentState.Upvoted ? "orange" : "grey")" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
+                            </svg></button>
+                            <span>@(comment.Upvotes - comment.Downvotes)</span>
+                            <button class="downvoteButton" @onclick="() => DownvoteComment(comment.CommentId)"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <g transform="rotate(180 12 12)">
+                                    <path fill="@(commentStates[comment.CommentId].State == CommentState.Downvoted ? "blue" : "grey")" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
+                                </g>
+                            </svg></button>
+                        </div>
+                    </div>
+                }
+            </div>
+            
+            <div class="sendCommDiv">
+                <InputTextArea type="text" class="inputField" @oninput="HandleChange" @bind-Value="@newCommentText" placeholder="Your comment..."></InputTextArea>
+                <button @onclick="HandleComment">Send</button>
+                <span class="charsLeft @show"><span style="color:@color ;">@numOfChars</span> / @commentMaxLength</span>
+            </div>
+            <span style="color: red;">@commentErrMes</span>
+            
         </div>
-    } else if (!postExists)
+        } else if (!postExists)
     {
         <div class="notFoundDiv">
             <img src="err.webp" alt="Error picture"/>
@@ -76,6 +95,13 @@
     public long postId { get; set; }
 
     Cookie? _cookie;
+
+    string? newCommentText;
+    const int commentMaxLength = 200;
+    string commentErrMes = "";
+    int numOfChars = 0;
+    string show = "";
+    string color = "black";
     
     bool loaded = false;
     
@@ -89,7 +115,8 @@
     
     Dictionary<long, CommentStateTimestampContainer> commentStates = new Dictionary<long, CommentStateTimestampContainer>();
     
-    bool errVoting = false;
+    bool err = false;
+    string errMessage = "";
 
     string? timeAgo;
     
@@ -106,7 +133,7 @@
         {
             case HttpStatusCode.OK:
                 _post = await response.Content.ReadFromJsonAsync<Post>();
-                timeAgo = FormatTimeAgo(_post.TimeStamp);
+                timeAgo = FormatTimeAgo(_post.TimeStamp.ToLocalTime());
                 SearchForPostVote();
                 SearchForCommentsVote(_post.Comments);
                 break;
@@ -121,6 +148,17 @@
         }
         loaded = true;
         StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        UserState.OnChange += BackToMainPage;
+    }
+
+    // Bliver åbenbar kaldet automatisk af Blazor
+    public void Dispose()
+    {
+        UserState.OnChange -= BackToMainPage;
     }
 
     private void BackToMainPage()
@@ -173,7 +211,7 @@
             var dVoted = _cookie.commentsDownvoted.FirstOrDefault(c => c == comment.CommentId);
 
             var state = new CommentStateTimestampContainer();
-            state.FormattedTimestamp = FormatTimeAgo(comment.TimeStamp);
+            state.FormattedTimestamp = FormatTimeAgo(comment.TimeStamp.ToLocalTime());
             
             if (uVoted == 0  && dVoted == 0)
             {
@@ -205,7 +243,7 @@
                     break;
                     
                 case HttpStatusCode.NotFound:
-                    await ShowErrorMessage();
+                    await ShowErrorMessage("Post not found");
                     break;
             }
             await LocalStorage.SetItemAsync("Session", _cookie);
@@ -229,7 +267,7 @@
                     break;
                     
                 case HttpStatusCode.NotFound:
-                    await ShowErrorMessage();
+                    await ShowErrorMessage("Post not found");
                     break;
             }
         }
@@ -245,7 +283,7 @@
                 break;
                 
             case HttpStatusCode.NotFound:
-                await ShowErrorMessage();
+                await ShowErrorMessage("Post not found");
                 break;
         }
         await LocalStorage.SetItemAsync("Session", _cookie);
@@ -268,7 +306,7 @@
                     break;
                     
                 case HttpStatusCode.NotFound:
-                    await ShowErrorMessage();
+                    await ShowErrorMessage("Post not found");
                     break;
             }
             await LocalStorage.SetItemAsync("Session", _cookie);
@@ -292,7 +330,7 @@
                     break;
                     
                 case HttpStatusCode.NotFound:
-                    await ShowErrorMessage();
+                    await ShowErrorMessage("Post not found");
                     break;
             }
         }
@@ -308,7 +346,7 @@
                 break;
                 
             case HttpStatusCode.NotFound:
-                await ShowErrorMessage();
+                await ShowErrorMessage("Post not found");
                 break;
         }
         await LocalStorage.SetItemAsync("Session", _cookie);
@@ -337,7 +375,7 @@
                     break;
                     
                 case HttpStatusCode.NotFound:
-                    await ShowErrorMessage();
+                    await ShowErrorMessage("Post not found");
                     break;
             }
 
@@ -368,7 +406,7 @@
                     break;
                     
                 case HttpStatusCode.NotFound:
-                    await ShowErrorMessage();
+                    await ShowErrorMessage("Post not found");
                     break;
             }
         }
@@ -392,7 +430,7 @@
                 break;
                 
             case HttpStatusCode.NotFound:
-                await ShowErrorMessage();
+                await ShowErrorMessage("Post not found");
                 break;
         }
 
@@ -423,7 +461,7 @@
                     break;
                     
                 case HttpStatusCode.NotFound:
-                    await ShowErrorMessage();
+                    await ShowErrorMessage("Post not found");
                     break;
             }
 
@@ -454,7 +492,7 @@
                     break;
                     
                 case HttpStatusCode.NotFound:
-                    await ShowErrorMessage();
+                    await ShowErrorMessage("Post not found");
                     break;
             }
         }
@@ -477,7 +515,7 @@
                 break;
                 
             case HttpStatusCode.NotFound:
-                await ShowErrorMessage();
+                await ShowErrorMessage("Post not found");
                 break;
         }
 
@@ -485,13 +523,81 @@
         StateHasChanged();
     }
 
-    private async Task ShowErrorMessage()
+    private async Task ShowErrorMessage(string message)
     {
-        errVoting = true;
+        errMessage = message;
+        err = true;
         StateHasChanged();
         await Task.Delay(3000);
-        errVoting = false;
+        err = false;
         StateHasChanged();
     }
-    
+
+    private async void HandleComment()
+    {
+        if (string.IsNullOrWhiteSpace(newCommentText))
+        {
+            commentErrMes = "Comment is empty";
+        } else if (newCommentText.Length > commentMaxLength)
+        {
+            commentErrMes = "Comment too long";
+        }
+
+        var com = new CommentDTO()
+        {
+            Author = _cookie.AuthorName,
+            Content = newCommentText
+        };
+        
+        var response = await Service.PostComment(_post.PostId, com);
+        switch (response.StatusCode)
+        {
+            case HttpStatusCode.OK:
+                var comment = await response.Content.ReadFromJsonAsync<Comment>();
+                _post.Comments.Add(comment);
+                commentStates[comment.CommentId] = new CommentStateTimestampContainer()
+                {
+                    FormattedTimestamp = FormatTimeAgo(comment.TimeStamp.ToLocalTime()),
+                    State = CommentState.Notvoted
+                };
+                newCommentText = "";
+                break;
+                
+            case HttpStatusCode.NotFound:
+                await ShowErrorMessage("Post not found");
+                break;
+                
+            case HttpStatusCode.Conflict:
+                await ShowErrorMessage("Server could not post comment, try again later");
+                break;
+        }
+        StateHasChanged();
+    }
+
+    private void HandleChange(ChangeEventArgs e)
+    {
+        commentErrMes = "";
+        newCommentText = e.Value.ToString();
+        if (!string.IsNullOrWhiteSpace(newCommentText))
+        {
+            show = "show";
+            numOfChars = newCommentText.Length;
+        }
+        else
+        {
+            show = "";
+            numOfChars = 0;
+        }
+
+        if (e.Value.ToString().Length > commentMaxLength)
+        {
+            color = "red";
+        }
+        else
+        {
+            color = "black";
+        }
+        StateHasChanged();
+    }
+
 }

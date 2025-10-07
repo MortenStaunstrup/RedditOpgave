@@ -21,7 +21,7 @@
                 <hr/>
                 <div class="postCard" @onclick="() => ShowThread(post.PostId)">
                     <span class="postTitle">@post.Title</span>
-                    <span class="postText">@(post.Content.Length > maxContentLength ? post.Content.Substring(0, maxContentLength) + "..." : post.Content)</span>
+                    <span class="postText">@(post.Content != null ? post.Content.Length > maxContentLength ? post.Content.Substring(0, maxContentLength) + "..." : post.Content : post.URL)</span>
                 </div>
             }
             @if (!noMorePosts)
@@ -51,6 +51,7 @@
     string? nameErrMes;
     bool hasUsername = false;
 
+    const int maxNameLength = 15;
     const int maxContentLength = 150;
 
     int page = 0;
@@ -59,7 +60,6 @@
     
     protected override async Task OnInitializedAsync()
     {
-        
         _cookie = await LocalStorage.GetItemAsync<Cookie?>("Session");
         if (_cookie is not null)
         {
@@ -99,12 +99,35 @@
         StateHasChanged();
     }
 
+    private void ChangeName()
+    {
+        if (string.IsNullOrWhiteSpace(UserState.Username))
+        {
+            _cookie = null;
+            hasUsername = false;
+            Username = "";
+            StateHasChanged();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        UserState.OnChange += ChangeName;
+    }
+
+    public void Dispose()
+    {
+        UserState.OnChange -= ChangeName;
+    }
+
     private async void HandleAuthorName()
     {
         if (string.IsNullOrWhiteSpace(Username))
         {
             nameErrMes = "Username is required";
-            Username = "";
+        } else if (Username.Length > maxNameLength)
+        {
+            nameErrMes = $"Username max length is {maxNameLength} characters";
         }
         else
         {
@@ -134,16 +157,6 @@
     private void OnAuthorNameChange(ChangeEventArgs e)
     {
         nameErrMes = "";
-        StateHasChanged();
-    }
-
-    private async void ChangeName()
-    {
-        hasUsername = false;
-        await LocalStorage.ClearAsync();
-        Username = string.Empty;
-        _cookie = null;
-        UserState.Username = string.Empty;
         StateHasChanged();
     }
 

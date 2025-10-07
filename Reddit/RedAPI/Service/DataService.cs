@@ -144,7 +144,146 @@ public class DataService
                 }
             };
 
-            db.AddRange(post1, post2, post3, post4, post5, post6);
+            var post7 = new Post()
+            {
+                PostId = 7,
+                Author = "Bob",
+                URL = "https://cataas.com/cat",
+                TimeStamp = new DateTime(2023, 3, 5, 20, 10, 0),
+                Title = "The cataas",
+                Comments = new List<Comment>()
+                {
+                    new Comment
+                    {
+                        CommentId = 43, Author = "MondayBlues",
+                        Content = "So that’s why I feel like cosmic dust on Mondays",
+                        TimeStamp = new DateTime(2023, 6, 12, 8, 25, 10), Upvotes = 20, Downvotes = 6
+                    },
+                    new Comment
+                    {
+                        CommentId = 44, Author = "StarStruck", Content = "Can we reschedule Monday to another galaxy?",
+                        TimeStamp = new DateTime(2023, 6, 12, 9, 0, 0), Upvotes = 28, Downvotes = 2
+                    },
+                    new Comment
+                    {
+                        CommentId = 45, Author = "AstroNerd42", Content = "Mondays collapse faster than neutron stars",
+                        TimeStamp = new DateTime(2023, 6, 12, 9, 30, 0), Upvotes = 9, Downvotes = 3
+                    },
+                    new Comment
+                    {
+                        CommentId = 46, Author = "CoffeeBlackHole",
+                        Content = "The only solution: caffeine and Carl Sagan quotes",
+                        TimeStamp = new DateTime(2023, 6, 12, 10, 14, 0), Upvotes = 17, Downvotes = 1
+                    },
+                    new Comment
+                    {
+                        CommentId = 47, Author = "TiredHuman",
+                        Content = "And Fridays are made of neutron stars b/c they hit so hard",
+                        TimeStamp = new DateTime(2023, 6, 12, 10, 30, 0), Upvotes = 12, Downvotes = 0
+                    },
+                    new Comment
+                    {
+                        CommentId = 48, Author = "StellarJoke", Content = "Is there a wormhole out of Monday?",
+                        TimeStamp = new DateTime(2023, 6, 12, 11, 12, 0), Upvotes = 15, Downvotes = 2
+                    },
+                    new Comment
+                    {
+                        CommentId = 49, Author = "CosmicComedian", Content = "Now I blame the Big Bang for my calendar",
+                        TimeStamp = new DateTime(2023, 6, 12, 11, 50, 0), Upvotes = 13, Downvotes = 0
+                    },
+                },
+                Upvotes = 500000,
+                Downvotes = 0,
+            };
+            
+            var post8 = new Post()
+            {
+                PostId = 8,
+                Author = "Marie Curie",
+                URL = "https://commons.wikimedia.org/wiki/File:Marie_Curie_c1920.jpg",
+                Content = "When in doubt, add more radium.",
+                TimeStamp = new DateTime(1920, 4, 15, 10, 15, 0),
+                Title = "Glow in the dark science",
+                Upvotes = 1822,
+                Downvotes = 12,
+                Comments = new List<Comment>
+                {
+                    new Comment { CommentId = 50, Author = "GlowStick", Content = "Marie, my hands are glowing now. Is that normal?", TimeStamp = new DateTime(1920, 4, 15, 11, 5, 0), Upvotes = 7, Downvotes = 1 },
+                    new Comment { CommentId = 51, Author = "ScienceFan", Content = "Adding radium to my todo list!", TimeStamp = new DateTime(1920, 4, 15, 12, 20, 0), Upvotes = 13, Downvotes = 3 },
+                    new Comment { CommentId = 52, Author = "ProfessorX", Content = "Application: night lights, but hazardous.", TimeStamp = new DateTime(1920, 4, 15, 13, 00, 0), Upvotes = 5, Downvotes = 0 }
+                }
+            };
+
+            var post9 = new Post()
+            {
+                PostId = 9,
+                Author = "SpaceCat2024",
+                URL = "https://cataas.com/cat/cute",
+                // No Content
+                TimeStamp = new DateTime(2024, 2, 1, 20, 30, 0),
+                Title = "Proof cats belong in space",
+                Upvotes = 842,
+                Downvotes = 2,
+                Comments = new List<Comment>
+                {
+                    new Comment { CommentId = 53, Author = "AstroFelix", Content = "Permission to launch, captain!", TimeStamp = new DateTime(2024, 2, 1, 21, 0, 0), Upvotes = 19, Downvotes = 1 },
+                    new Comment { CommentId = 54, Author = "Meowgellan", Content = "Catronauts unite!", TimeStamp = new DateTime(2024, 2, 1, 21, 15, 0), Upvotes = 11, Downvotes = 0 },
+                }
+            };
+
+            var post10 = new Post()
+            {
+                PostId = 10,
+                Author = "Buzz Aldrin",
+                Content = "Still haven't found the cheese on the moon.",
+                URL = "https://upload.wikimedia.org/wikipedia/commons/a/a8/Buzz_Aldrin.jpg",
+                TimeStamp = new DateTime(1969, 7, 21, 3, 15, 0),
+                Title = "Moon myths: busted!",
+                Upvotes = 1969,
+                Downvotes = 11,
+                Comments = new List<Comment>
+                {
+                    new Comment { CommentId = 55, Author = "CheeseLover", Content = "Maybe try the dark side next time.", TimeStamp = new DateTime(1969, 7, 21, 3, 45, 0), Upvotes = 22, Downvotes = 0 },
+                    new Comment { CommentId = 56, Author = "ApolloFan", Content = "How about crackers on Mars?", TimeStamp = new DateTime(1969, 7, 21, 4, 0, 0), Upvotes = 7, Downvotes = 2 }
+                }
+            };
+
+            var post11 = new Post()
+            {
+                PostId = 11,
+                Author = "Elon",
+                URL = "https://mars.nasa.gov/mars2020-raw-images/pub/ods/surface/sol/00011/ids/edr/browse/FRB_0001.jpg",
+                // No Content
+                TimeStamp = new DateTime(2022, 5, 4, 16, 20, 0),
+                Title = "Mars or bust",
+                Upvotes = 99999,
+                Downvotes = 12,
+                Comments = new List<Comment>
+                {
+                    new Comment { CommentId = 57, Author = "Earthling", Content = "Does Mars have better WiFi?", TimeStamp = new DateTime(2022, 5, 4, 17, 0, 0), Upvotes = 17, Downvotes = 1 },
+                    new Comment { CommentId = 58, Author = "RoverLover", Content = "Waiting for Dogecoin to reach Mars.", TimeStamp = new DateTime(2022, 5, 4, 17, 25, 0), Upvotes = 5, Downvotes = 0 }
+                }
+            };
+
+            var post12 = new Post()
+            {
+                PostId = 12,
+                Author = "Hubble Telescope",
+                URL = "https://cdn.spacetelescope.org/archives/images/screen/heic1509a.jpg",
+                Content = "Just another casual pic of the universe expanding.",
+                TimeStamp = new DateTime(2022, 11, 20, 4, 42, 0),
+                Title = "Space flex",
+                Upvotes = 3200,
+                Downvotes = 0,
+                Comments = new List<Comment>
+                {
+                    new Comment { CommentId = 59, Author = "GalaxyFan", Content = "Post your setup bro", TimeStamp = new DateTime(2022, 11, 20, 9, 0, 0), Upvotes = 9, Downvotes = 2 },
+                    new Comment { CommentId = 60, Author = "NebulaNerd", Content = "Universe's drip is unreal", TimeStamp = new DateTime(2022, 11, 20, 10, 12, 0), Upvotes = 6, Downvotes = 1 },
+                    new Comment { CommentId = 61, Author = "StarLord", Content = "Where's Pluto tho?", TimeStamp = new DateTime(2022, 11, 20, 10, 20, 0), Upvotes = 5, Downvotes = 0 }
+                }
+            };
+
+            db.AddRange(post1, post2, post3, post4, post5, post6, post7, post8, post9, post10, post11, post12);
             db.SaveChanges();
         }
     }

@@ -17,7 +17,7 @@ namespace RedAPI.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.8");
 
-            modelBuilder.Entity("RedAPI.Models.Comment", b =>
+            modelBuilder.Entity("Core.Comment", b =>
                 {
                     b.Property<long>("CommentId")
                         .ValueGeneratedOnAdd()
@@ -50,7 +50,7 @@ namespace RedAPI.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("RedAPI.Models.Post", b =>
+            modelBuilder.Entity("Core.Post", b =>
                 {
                     b.Property<long>("PostId")
                         .ValueGeneratedOnAdd()
@@ -61,7 +61,7 @@ namespace RedAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Content")
-                        .IsRequired()
+                        .HasMaxLength(800)
                         .HasColumnType("TEXT");
 
                     b.Property<long>("Downvotes")
@@ -72,6 +72,10 @@ namespace RedAPI.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("URL")
                         .HasColumnType("TEXT");
 
                     b.Property<long>("Upvotes")
@@ -82,14 +86,14 @@ namespace RedAPI.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("RedAPI.Models.Comment", b =>
+            modelBuilder.Entity("Core.Comment", b =>
                 {
-                    b.HasOne("RedAPI.Models.Post", null)
+                    b.HasOne("Core.Post", null)
                         .WithMany("Comments")
                         .HasForeignKey("PostId");
                 });
 
-            modelBuilder.Entity("RedAPI.Models.Post", b =>
+            modelBuilder.Entity("Core.Post", b =>
                 {
                     b.Navigation("Comments");
                 });

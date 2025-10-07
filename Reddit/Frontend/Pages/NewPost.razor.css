@@ -1,0 +1,45 @@
+.newPostPage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+::deep .inputStyle{
+    border-radius: 11px;
+    border: none;
+    background-color: #efefef;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 100%;
+}
+
+::deep .textareaStyle{
+    min-height: 85px;
+    border-radius: 11px;
+    border: none;
+    background-color: #efefef;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 100%;
+}
+
+::deep .inputDiv{
+    width: 100%;
+}
+
+::deep .formStyle{
+    width: 35%;
+}
+
+.buffer{
+    margin-bottom: 100px;
+}
+
+button{
+    border: none;
+    border-radius: 12px;
+    background-color: #c2c2ff;
+}

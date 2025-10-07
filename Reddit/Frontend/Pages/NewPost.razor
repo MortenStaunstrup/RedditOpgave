@@ -1,7 +1,90 @@
+@using System.Net
+@using Core
 @using Frontend.Service
+@using Cookie = Core.Cookie
 @inject PostService Service
-@page "/NewThread"
-<h3>NewThread</h3>
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject NavigationManager Nav
+@page "/newpost"
+
+
+@if (loaded)
+{
+    <div class="newPostPage">
+        
+        <h3 class="buffer">New Post</h3>
+        
+        <EditForm class="formStyle" EditContext="Context" OnSubmit="HandleSubmit">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+
+            <div class="inputDiv buffer">
+                <InputText class="inputStyle" placeholder="Title" @bind-Value="_model.Title"></InputText>
+                <ValidationMessage For="() => _model.Title"></ValidationMessage>
+            </div>
+
+            <div class="inputDiv">
+                <InputTextArea class="textareaStyle" placeholder="Content" @bind-Value="_model.Content"></InputTextArea>
+                <ValidationMessage For="() => _model.Content"></ValidationMessage>
+            </div>
+
+            <div>
+                <button type="submit">Post</button>
+            </div>
+
+        </EditForm>
+    </div>
+}
 
 @code {
+
+    bool loaded = false;
+    Post? _model;
+    EditContext Context;
+    Cookie? _cookie;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _cookie = await LocalStorage.GetItemAsync<Cookie>("Session");
+        if (_cookie is null)
+        {
+            BackToMainPage();
+        }
+
+        _model = new Post();
+        Context = new EditContext(_model);
+        
+        loaded = true;
+    }
+
+    private void BackToMainPage()
+    {
+        Nav.NavigateTo("/");
+    }
+
+    private async void HandleSubmit()
+    {
+        _model.Author = _cookie.AuthorName;
+        if (Context.Validate())
+        {
+            var dto = new PostDTO()
+            {
+                Author = _model.Author,
+                Content = _model.Content,
+                Title = _model.Title
+            };
+            
+            var response = await Service.PostPost(dto);
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    var post = await response.Content.ReadFromJsonAsync<Post>();
+                    Nav.NavigateTo($"/postpage/{post.PostId}");
+                    break;
+                    
+                case HttpStatusCode.Conflict:
+                    break;
+            }
+        }
+    }
+
 }

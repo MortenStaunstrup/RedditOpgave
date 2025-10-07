@@ -4,6 +4,23 @@
     height: 100vh;
 }
 
+svg{
+    width: 22px;
+}
+
+button{
+    border: none;
+    border-radius: 12px;
+}
+
+button:hover{
+    background-color: #aaaaaa;
+}
+
+.buttons{
+    margin-right: 10px;
+}
+
 .reddit-header {
     display: flex;
     align-items: center;
@@ -48,4 +65,10 @@
     padding: 20px 0;
     min-height: 0;
     overflow: auto;
+}
+
+@media (max-width: 900px){
+    .search {
+        display: none;
+    }
 }
