@@ -76,6 +76,7 @@ namespace RedAPI.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("URL")
+                        .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
                     b.Property<long>("Upvotes")

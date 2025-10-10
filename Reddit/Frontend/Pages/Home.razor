@@ -26,7 +26,7 @@
             }
             @if (!noMorePosts)
             {
-                <span class="showMore">Show more...</span>
+                <span class="showMore" @onclick="ShowMorePosts">Show more...</span>
             }
         </div>
     } else
@@ -75,7 +75,15 @@
             }
 
         }
+
+        await GetPosts();
         
+        loaded = true;
+        StateHasChanged();
+    }
+
+    private async Task GetPosts()
+    {
         var response = await Service.GetPosts(page);
         switch (response.StatusCode)
         {
@@ -94,11 +102,8 @@
                 Console.WriteLine("Response on get posts not an expected statuscode");
                 break;
         }
-        
-        loaded = true;
-        StateHasChanged();
     }
-
+    
     private void ChangeName()
     {
         if (string.IsNullOrWhiteSpace(UserState.Username))
@@ -163,6 +168,13 @@
     private void ShowThread(long postPostId)
     {
         Nav.NavigateTo($"/PostPage/{postPostId}");
+    }
+
+    private async Task ShowMorePosts()
+    {
+        page++;
+        await GetPosts();
+        StateHasChanged();
     }
 
 }

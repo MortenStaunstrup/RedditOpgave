@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RedAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,9 +17,10 @@ namespace RedAPI.Migrations
                 {
                     PostId = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 400, nullable: false),
                     Author = table.Column<string>(type: "TEXT", nullable: false),
-                    Content = table.Column<string>(type: "TEXT", nullable: false),
+                    Content = table.Column<string>(type: "TEXT", maxLength: 800, nullable: true),
+                    URL = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
                     TimeStamp = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Upvotes = table.Column<long>(type: "INTEGER", nullable: false),
                     Downvotes = table.Column<long>(type: "INTEGER", nullable: false)

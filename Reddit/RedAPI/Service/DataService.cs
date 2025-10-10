@@ -202,15 +202,15 @@ public class DataService
                 Author = "Marie Curie",
                 URL = "https://commons.wikimedia.org/wiki/File:Marie_Curie_c1920.jpg",
                 Content = "When in doubt, add more radium.",
-                TimeStamp = new DateTime(1920, 4, 15, 10, 15, 0),
+                TimeStamp = new DateTime(2025, 10, 15, 10, 15, 0),
                 Title = "Glow in the dark science",
                 Upvotes = 1822,
                 Downvotes = 12,
                 Comments = new List<Comment>
                 {
-                    new Comment { CommentId = 50, Author = "GlowStick", Content = "Marie, my hands are glowing now. Is that normal?", TimeStamp = new DateTime(1920, 4, 15, 11, 5, 0), Upvotes = 7, Downvotes = 1 },
-                    new Comment { CommentId = 51, Author = "ScienceFan", Content = "Adding radium to my todo list!", TimeStamp = new DateTime(1920, 4, 15, 12, 20, 0), Upvotes = 13, Downvotes = 3 },
-                    new Comment { CommentId = 52, Author = "ProfessorX", Content = "Application: night lights, but hazardous.", TimeStamp = new DateTime(1920, 4, 15, 13, 00, 0), Upvotes = 5, Downvotes = 0 }
+                    new Comment { CommentId = 50, Author = "GlowStick", Content = "Marie, my hands are glowing now. Is that normal?", TimeStamp = new DateTime(2025, 10, 15, 11, 5, 0), Upvotes = 7, Downvotes = 1 },
+                    new Comment { CommentId = 51, Author = "ScienceFan", Content = "Adding radium to my todo list!", TimeStamp = new DateTime(2025, 10, 15, 12, 20, 0), Upvotes = 13, Downvotes = 3 },
+                    new Comment { CommentId = 52, Author = "ProfessorX", Content = "Application: night lights, but hazardous.", TimeStamp = new DateTime(2025, 10, 15, 13, 00, 0), Upvotes = 5, Downvotes = 0 }
                 }
             };
 
@@ -237,14 +237,14 @@ public class DataService
                 Author = "Buzz Aldrin",
                 Content = "Still haven't found the cheese on the moon.",
                 URL = "https://upload.wikimedia.org/wikipedia/commons/a/a8/Buzz_Aldrin.jpg",
-                TimeStamp = new DateTime(1969, 7, 21, 3, 15, 0),
+                TimeStamp = new DateTime(2025, 7, 21, 3, 15, 0),
                 Title = "Moon myths: busted!",
                 Upvotes = 1969,
                 Downvotes = 11,
                 Comments = new List<Comment>
                 {
-                    new Comment { CommentId = 55, Author = "CheeseLover", Content = "Maybe try the dark side next time.", TimeStamp = new DateTime(1969, 7, 21, 3, 45, 0), Upvotes = 22, Downvotes = 0 },
-                    new Comment { CommentId = 56, Author = "ApolloFan", Content = "How about crackers on Mars?", TimeStamp = new DateTime(1969, 7, 21, 4, 0, 0), Upvotes = 7, Downvotes = 2 }
+                    new Comment { CommentId = 55, Author = "CheeseLover", Content = "Maybe try the dark side next time.", TimeStamp = new DateTime(2025, 7, 21, 3, 45, 0), Upvotes = 22, Downvotes = 0 },
+                    new Comment { CommentId = 56, Author = "ApolloFan", Content = "How about crackers on Mars?", TimeStamp = new DateTime(2025, 7, 21, 4, 0, 0), Upvotes = 7, Downvotes = 2 }
                 }
             };
 
