@@ -12,13 +12,14 @@
 {
     if (_post is not null)
     {
-        if (err)
-        {
-            <div class="alert alert-danger" role="alert">
-                @errMessage
-            </div>
-        }
+        
         <div class="postPage">
+            @if (err)
+            {
+                <div class="alert alert-danger" role="alert" style="z-index: 420; position: absolute;">
+                    @errMessage
+                </div>
+            }
             <div class="postCard">
                 <div class="authorTimestamp">
                     <span>@_post.Author</span>
@@ -33,18 +34,20 @@
                     }
                 </div>
                 <div class="voteButtDiv">
-                    <button class="upvoteButton" @onclick="UpvotePost"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path fill="@upvoteColor" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
-                    </svg></button>
+                    <button class="upvoteButton" @onclick="UpvotePost">
+                        <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="@upvoteColor" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
+                        </svg></button>
                     <span>@(_post.Upvotes - _post.Downvotes)</span>
-                    <button class="downvoteButton" @onclick="DownvotePost"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <g transform="rotate(180 12 12)">
-                            <path fill="@downvoteColor" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
-                        </g>
-                    </svg></button>
+                    <button class="downvoteButton" @onclick="DownvotePost">
+                        <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <g transform="rotate(180 12 12)">
+                                <path fill="@downvoteColor" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
+                            </g>
+                        </svg></button>
                 </div>
             </div>
-        
+
             <div class="commentsDiv">
                 @foreach (var comment in _post.Comments)
                 {
@@ -57,27 +60,29 @@
                             <span>@comment.Content</span>
                         </div>
                         <div class="voteButtDiv">
-                            <button class="upvoteButton" @onclick="() => UpvoteComment(comment.CommentId)"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path fill="@(commentStates[comment.CommentId].State == CommentState.Upvoted ? "orange" : "grey")" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
-                            </svg></button>
+                            <button class="upvoteButton" @onclick="() => UpvoteComment(comment.CommentId)">
+                                <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill="@(commentStates[comment.CommentId].State == CommentState.Upvoted ? "orange" : "grey")" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
+                                </svg></button>
                             <span>@(comment.Upvotes - comment.Downvotes)</span>
-                            <button class="downvoteButton" @onclick="() => DownvoteComment(comment.CommentId)"> <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <g transform="rotate(180 12 12)">
-                                    <path fill="@(commentStates[comment.CommentId].State == CommentState.Downvoted ? "blue" : "grey")" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
-                                </g>
-                            </svg></button>
+                            <button class="downvoteButton" @onclick="() => DownvoteComment(comment.CommentId)">
+                                <svg width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <g transform="rotate(180 12 12)">
+                                        <path fill="@(commentStates[comment.CommentId].State == CommentState.Downvoted ? "blue" : "grey")" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625l-8-10z"/>
+                                    </g>
+                                </svg></button>
                         </div>
                     </div>
                 }
             </div>
-            
+
             <div class="sendCommDiv">
                 <InputTextArea type="text" class="inputField" @oninput="HandleChange" @bind-Value="@newCommentText" placeholder="Your comment..."></InputTextArea>
                 <button @onclick="HandleComment">Send</button>
                 <span class="charsLeft @show"><span style="color:@color ;">@numOfChars</span> / @commentMaxLength</span>
             </div>
             <span style="color: red;">@commentErrMes</span>
-            
+
         </div>
         } else if (!postExists)
     {
@@ -538,9 +543,12 @@
         if (string.IsNullOrWhiteSpace(newCommentText))
         {
             commentErrMes = "Comment is empty";
-        } else if (newCommentText.Length > commentMaxLength)
+            return;
+        }
+        if (newCommentText.Length > commentMaxLength)
         {
             commentErrMes = "Comment too long";
+            return;
         }
 
         var com = new CommentDTO()
