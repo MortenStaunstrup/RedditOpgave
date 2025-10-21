@@ -23,12 +23,12 @@
             </div>
 
             <div class="inputDiv">
-                <InputTextArea @oninput="Onchange" class="textareaStyle" placeholder="Content" @bind-Value="_model.Content"></InputTextArea>
+                <InputTextArea oninput="@ContentAdded" class="textareaStyle" placeholder="Content" @bind-Value="_model.Content"></InputTextArea>
                 <ValidationMessage For="() => _model.Content"></ValidationMessage>
             </div>
             
             <div style="margin-bottom: 10px;" class="inputDiv">
-                <InputText @oninput="Onchange" class="inputStyle" placeholder="URL..." @bind-Value="_model.URL"></InputText>
+                <InputText oninput="@ContentAdded" class="inputStyle" placeholder="URL..." @bind-Value="_model.URL"></InputText>
                 <ValidationMessage For="() => _model.URL"></ValidationMessage>
             </div>
             
@@ -89,7 +89,8 @@
             {
                 Author = _model.Author,
                 Content = _model.Content,
-                Title = _model.Title
+                Title = _model.Title,
+                URL = _model.URL
             };
             
             var response = await Service.PostPost(dto);
@@ -106,7 +107,7 @@
         }
     }
 
-    private void Onchange(ChangeEventArgs e)
+    private void ContentAdded(ChangeEventArgs e)
     {
         missingContent = false;
         StateHasChanged();

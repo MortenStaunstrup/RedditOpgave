@@ -425,7 +425,8 @@ public class DataService
                 Comments = new List<Comment>(), 
                 Upvotes = 0, Downvotes = 0, 
                 Title = post.Title,
-                TimeStamp = DateTime.UtcNow
+                TimeStamp = DateTime.UtcNow,
+                URL = post.URL
             };
             db.Posts.Add(newPost);
             db.SaveChanges();

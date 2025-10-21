@@ -11,7 +11,7 @@ using RedAPI.Models;
 namespace RedAPI.Migrations
 {
     [DbContext(typeof(PostContext))]
-    [Migration("20251010091434_init")]
+    [Migration("20251021091221_init")]
     partial class init
     {
         /// <inheritdoc />

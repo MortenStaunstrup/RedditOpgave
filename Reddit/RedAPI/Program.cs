@@ -173,5 +173,5 @@ app.MapPost("/api/posts/{postId:long}/comments", (DataService service, long post
     
 app.Run();
 
-public record RecordPost(string Title, string Content, string Author);
+public record RecordPost(string Title, string? Content, string Author, string? URL);
 public record RecordComment(string Author, string Content);
