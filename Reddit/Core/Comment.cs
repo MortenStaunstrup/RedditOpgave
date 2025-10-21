@@ -1,4 +1,3 @@
-namespace Core;
 public class Comment
 {
     public long CommentId { get; set; }
