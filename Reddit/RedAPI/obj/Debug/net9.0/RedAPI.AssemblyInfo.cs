@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RedAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d5d8596444417d063c01366dad7a17afecdc59f5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cd76cb8dd8f38cfce9a6ea623a7b327ccfd494ec")]
 [assembly: System.Reflection.AssemblyProductAttribute("RedAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RedAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
